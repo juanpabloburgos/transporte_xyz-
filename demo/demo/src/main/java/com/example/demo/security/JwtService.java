@@ -1,7 +1,6 @@
 package com.example.demo.security;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +27,7 @@ public class JwtService {
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .signWith(getKey())
                 .compact();
     }
 
@@ -50,6 +49,7 @@ public class JwtService {
                     .parseSignedClaims(token)
                     .getPayload()
                     .getExpiration();
+
             return username.equals(userDetails.getUsername()) && expirationDate.after(new Date());
         } catch (Exception e) {
             return false;
